@@ -29,6 +29,16 @@ UserCollection = db.Table(
                    primary_key=True),
     )
 
+BookTag = db.Table(
+        'book_tag',
+        db.Column('book_id', db.Integer,
+                  db.ForeignKey('books.id', ondelete="CASCADE"),
+                  primary_key=True),
+        db.Column('tag_id', db.Integer,
+                  db.ForeignKey('tags.id', ondelete="CASCADE"),
+                  primary_key=True),
+    )
+
 class User(db.Model):
     """
     用户表
@@ -41,7 +51,9 @@ class User(db.Model):
     college = db.Column(db.String(164))
     coins = db.Column(db.Integer, default = 0)
     sold = db.Column(db.Integer, default = 0)
+    books = db.relationship('Book', backref='publisher', lazy='dynamic', cascade='all')
     comments = db.relationship('Comment', backref='commentator', lazy='dynamic', cascade='all')
+    records = db.relationship('Record', backref='buyer', lazy='dynamic', cascade='all')
     collections = db.relationship('Book', secondary= UserCollection,
                                   backref=db.backref('collectors', lazy='dynamic'),
                                   lazy='dynamic', cascade='all')
@@ -54,7 +66,7 @@ class User(db.Model):
         s = Serializer(
             current_app.config['SECRET_KEY']
         )
-        return s.dumps({'id': self.id})
+        return str(s.dumps({'id': self.id}), encoding='utf8')
 
 
     @staticmethod
@@ -86,7 +98,12 @@ class Book(db.Model):
     contact = db.Column(db.Text)
     pushlish_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     edit_time = db.Column(db.DateTime, default=datetime.utcnow)
+    publisher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='book', lazy='dynamic', cascade='all')
+    tags =  db.relationship("Tag",
+                            secondary=BookTag,
+                            backref=db.backref('books', lazy='dynamic'),
+                            lazy='dynamic', cascade='all')
 
 class Record(db.Model):
     """
@@ -95,8 +112,8 @@ class Record(db.Model):
     __tablename__ = "records"
     id = db.Column(db.Integer, primary_key=True)
     record_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    pushlisher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
 
 
 class Comment(db.Model):
@@ -109,4 +126,13 @@ class Comment(db.Model):
     commentator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
     content = db.Column(db.Text)
+
+
+class Tag(db.Model):
+    """
+    标签
+    """
+    __tablename__ = "tags"
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(128), index=True)
 
