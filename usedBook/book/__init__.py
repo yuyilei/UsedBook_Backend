@@ -5,4 +5,4 @@ book = Blueprint(
         __name__,
 )
 
-from . import publish, puton, putoff, collect
+from . import publish, puton, putoff, collect, purchase
