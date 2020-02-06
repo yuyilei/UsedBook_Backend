@@ -76,8 +76,8 @@ class User(db.Model):
         """
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.load(token)
-        except:
+            data = s.loads(token)
+        except Exception as e:
             return None
         else:
             return User.query.get_or_404(data['id'])
@@ -90,6 +90,7 @@ class Book(db.Model):
     __tablename__ = "books"
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer)
+    picture = db.Column(db.String(164))
     is_selt = db.Column(db.Boolean, default=False)
     on_sell = db.Column(db.Boolean, default=True)
     name = db.Column(db.String(164))
