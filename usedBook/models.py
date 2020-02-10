@@ -106,6 +106,20 @@ class Book(db.Model):
                             backref=db.backref('books', lazy='dynamic'),
                             lazy='dynamic', cascade='all')
 
+    def publish_json(self):
+        json_book = {
+            'id': self.id,
+            'price': self.price,
+            'picture': self.picture,
+            'title': self.title,
+            'is_selt': self.is_selt,
+            'on_sell': self.on_sell,
+            'information': self.information,
+            'publish_time': self.pushlish_time,
+            'collect_count': len(list(self.collectors)),
+        }
+        return json_book
+
 class Record(db.Model):
     """
     购买记录
