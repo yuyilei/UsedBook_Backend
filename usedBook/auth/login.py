@@ -65,7 +65,6 @@ def login():
                     message = "failed in generating the user, ex= %s" % e.message
                 else:
                     message = "first login, and generate that user"
-
             return jsonify({
                 'success': True,
                 'token': token,
