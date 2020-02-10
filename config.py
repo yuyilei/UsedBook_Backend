@@ -31,6 +31,10 @@ class Config:
     REDIS_BROKER_HOSTNAME = os.getenv('REDIS_BROKER_HOSTNAME')
     REDIS_BACKEND_HOSTNAME = os.getenv('REDIS_BACKEND_HOSTNAME')
 
+    """redis distirbution lock"""
+    REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME') or "127.0.0.1"
+    REDIS_PORT = os.getenv('REDIS_PORT') or 6379
+
     """celery configuration"""
     CELERY_BROKER_URL = 'redis://{}:6385/1'.format(os.environ.get('REDIS_BROKER_HOSTNAME'))
     CELERY_RESULT_BACKEND = 'redis://{}:6386/1'.format(os.environ.get('REDIS_BACKEND_HOSTNAME'))
