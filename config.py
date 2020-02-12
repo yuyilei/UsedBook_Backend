@@ -45,6 +45,10 @@ class Config:
     WX_APPID = os.getenv('WX_APPID')
     WX_APPSECRET = os.getenv('WX_APPSECRET')
 
+    QINIU_ACCESS_KEY = os.getenv('QINIU_ACCESS_KEY')
+    QINIU_SECRET_KEY = os.getenv('QINIU_SECRET_KEY')
+    QINIU_BUCKET_NAME = os.getenv('QINIU_BUCKET_NAME')
+
     @staticmethod
     def init_app(app):
         pass
