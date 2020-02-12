@@ -120,6 +120,37 @@ class Book(db.Model):
         }
         return json_book
 
+    def market_json(self, user):
+        islike = True if user in self.collectors else False
+        json_book = {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'islike': islike,
+            'collect_count': len(list(self.collectors)),
+            'image': self.picture,
+            'brief': self.information,
+        }
+        return json_book
+
+
+    def detail_json(self, user):
+        ispublisher = True if self.publisher is user else False
+        islike = True if user in self.collectors else False
+        json_book = {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'islike': islike,
+            'ispublisher': ispublisher,
+            'image': self.picture,
+            'brief': self.information,
+            'collect_count': len(list(self.collectors)),
+            'onsell': self.on_sell,
+            'finished': self.is_selt,
+        }
+        return json_book
+
 class Record(db.Model):
     """
     购买记录
