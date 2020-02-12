@@ -1,5 +1,5 @@
 """
-    登录
+   POST  /auth/login/   登录
 """
 
 import requests
