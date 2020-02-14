@@ -139,6 +139,7 @@ class Book(db.Model):
     def detail_json(self, user):
         ispublisher = True if self.publisher is user else False
         islike = True if user in self.collectors else False
+        tags = "  ".join([tag.content for tag in self.tags])
         json_book = {
             'id': self.id,
             'name': self.name,
@@ -152,6 +153,7 @@ class Book(db.Model):
             'onsell': self.on_sell,
             'finished': self.is_selt,
             'need_connect': self.contact,
+            'tags': tags,
         }
         return json_book
 
