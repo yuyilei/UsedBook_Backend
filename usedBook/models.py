@@ -106,16 +106,18 @@ class Book(db.Model):
                             backref=db.backref('books', lazy='dynamic'),
                             lazy='dynamic', cascade='all')
 
-    def publish_json(self):
+    def publish_json(self, user):
+        islike = True if user in self.collectors else False
         json_book = {
             'id': self.id,
             'price': self.price,
-            'picture': self.picture,
+            'image': self.picture,
             'name': self.name,
             'title': self.title,
             'is_selt': self.is_selt,
             'on_sell': self.on_sell,
-            'information': self.information,
+            'islike': islike,
+            'brief': self.information,
             'publish_time': self.pushlish_time,
             'collect_count': len(list(self.collectors)),
         }
