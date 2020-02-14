@@ -14,9 +14,10 @@ access_key = app.config['QINIU_ACCESS_KEY']
 secret_key = app.config['QINIU_SECRET_KEY']
 bucket_name = app.config['QINIU_BUCKET_NAME']
 
-def generate_token(filename):
+def generate_token():
     q = Auth(access_key, secret_key)
     bucketname = "usedbook-storage"
+    filename = None
     token = q.upload_token(bucketname, filename, 3600)
     return token
 
@@ -26,10 +27,10 @@ def qiuniu():
     """
     获取七牛的
     """
-    filename = str(g.current_user.id) + str(int(time.time()))
     return jsonify({
-            "token": generate_token(filename),
+            "token": generate_token(),
             "bucketname": bucket_name,
+            "message": "success",
         }), 200
 
 
