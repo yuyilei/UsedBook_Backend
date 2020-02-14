@@ -46,6 +46,7 @@ def login():
             }), 401
     else:
         if rj.get('openid') is not None:
+            user_id = None
             # check in User
             openid = rj['openid']
             u = User.query.filter_by(open_id=openid).first()
@@ -53,6 +54,7 @@ def login():
             message = ""
             if u is not  None:
                 token = u.generate_auth_token()
+                user_id = u.id
                 message = "not first login"
             else:
                 # generate that user
@@ -61,6 +63,7 @@ def login():
                     db.session.add(user)
                     db.session.commit()
                     token = user.generate_auth_token()
+                    user_id = user.id
                 except Exception as e:
                     message = "failed in generating the user, ex= %s" % e.message
                 else:
@@ -69,6 +72,7 @@ def login():
                 'success': True,
                 'token': token,
                 'message': message,
+                'id': user_id,
                 }), 200
         else:
             return jsonify({
