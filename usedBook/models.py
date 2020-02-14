@@ -111,6 +111,7 @@ class Book(db.Model):
             'id': self.id,
             'price': self.price,
             'picture': self.picture,
+            'name': self.name,
             'title': self.title,
             'is_selt': self.is_selt,
             'on_sell': self.on_sell,
@@ -125,6 +126,7 @@ class Book(db.Model):
         json_book = {
             'id': self.id,
             'name': self.name,
+            'title': self.title,
             'price': self.price,
             'islike': islike,
             'collect_count': len(list(self.collectors)),
@@ -140,6 +142,7 @@ class Book(db.Model):
         json_book = {
             'id': self.id,
             'name': self.name,
+            'title': self.title,
             'price': self.price,
             'islike': islike,
             'ispublisher': ispublisher,
@@ -148,6 +151,7 @@ class Book(db.Model):
             'collect_count': len(list(self.collectors)),
             'onsell': self.on_sell,
             'finished': self.is_selt,
+            'need_connect': self.contact,
         }
         return json_book
 
