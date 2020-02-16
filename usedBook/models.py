@@ -180,6 +180,7 @@ class Comment(db.Model):
     commentator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
     content = db.Column(db.Text)
+    reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
 
 
 class Tag(db.Model):
