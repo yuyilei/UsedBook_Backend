@@ -47,7 +47,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     open_id = db.Column(db.String(36), index=True)  # weixin openid for identicaion
     username = db.Column(db.String(164))
-    biref = db.Column(db.Text)
+    avatar = db.Column(db.String(200))
     college = db.Column(db.String(164))
     coins = db.Column(db.Integer, default = 0)
     sold = db.Column(db.Integer, default = 0)
@@ -181,6 +181,21 @@ class Comment(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
     content = db.Column(db.Text)
     reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+
+
+    def to_json(self):
+        commentator = User.query.filter_by(id=self.commentator_id).first()
+        name = ""
+        if commentator != None:
+            name = commentator.username
+        comment_json = {
+            "content": self.content,
+            "commentator_name": name,
+            "time": self.comment_time,
+            "id": self.id,
+            "reply_id": self.reply_id,
+        }
+        return comment_json
 
 
 class Tag(db.Model):
