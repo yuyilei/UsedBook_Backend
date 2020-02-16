@@ -142,6 +142,8 @@ class Book(db.Model):
         ispublisher = True if self.publisher is user else False
         islike = True if user in self.collectors else False
         tags = "  ".join([tag.content for tag in self.tags])
+        t = self.pushlish_time
+        publish_time = "%s-%s %s:%s:%s" % (t.year, t.month, t.hour, t.minute, t.second)
         json_book = {
             'id': self.id,
             'name': self.name,
@@ -155,6 +157,7 @@ class Book(db.Model):
             'onsell': self.on_sell,
             'finished': self.is_selt,
             'need_connect': self.contact,
+            'publish_time': publish_time,
             'tags': tags,
         }
         return json_book
@@ -195,6 +198,30 @@ class Comment(db.Model):
             "id": self.id,
             "reply_id": self.reply_id,
         }
+        return comment_json
+
+    def display_json(self):
+        commentator = User.query.filter_by(id=self.commentator_id).first()
+        username = ""
+        avatar = ""
+        if commentator != None:
+            username = commentator.username
+            avatar = commentator.avatar
+        replyname = None
+        if self.reply_id:
+            reply = User.query.filter_by(id=self.reply_id).first()
+            if reply != None:
+                replyname = reply.username
+        t = self.comment_time
+        insertTime = "%s-%s %s:%s:%s" % (t.year, t.month, t.hour, t.minute, t.second)
+        comment_json = {
+                "userName": username,
+                "userPhoto": avatar,
+                "replyUserName": replyname,
+                "comment": self.content,
+                "id": self.id,
+                "insertTime": insertTime,
+            }
         return comment_json
 
 
