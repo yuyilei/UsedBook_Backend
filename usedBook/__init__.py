@@ -34,7 +34,6 @@ def create_app(config_name=None,main=True) :
     moment.init_app(app)
     login_manager.init_app(app)
     # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("AUTH_SQL") or "sqlite:///" + os.path.join(basedir, 'data.sqlite')
-    print(app.config['SQLALCHEMY_DATABASE_URI'])
 
     return app
 
