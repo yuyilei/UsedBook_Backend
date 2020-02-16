@@ -209,9 +209,9 @@ class Comment(db.Model):
             avatar = commentator.avatar
         replyname = None
         if self.reply_id:
-            reply = User.query.filter_by(id=self.reply_id).first()
-            if reply != None:
-                replyname = reply.username
+            reply_comment = Comment.query.filter_by(id=self.reply_id).first()
+            if reply_comment != None:
+                replyname = reply_comment.commentator.username
         t = self.comment_time
         insertTime = "%s-%s %s:%s:%s" % (t.year, t.month, t.hour, t.minute, t.second)
         comment_json = {
