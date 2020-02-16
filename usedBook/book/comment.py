@@ -1,6 +1,7 @@
 """
     POST /book/comment/ 发送评论
     GET /book/comment/ 获取评论
+    DELETE /book/comment/ 删除评论
 """
 
 from flask import jsonify, request, g
@@ -21,6 +22,7 @@ def post_comment():
                 content = content,
                 book_id = book_id,
                 commentator_id = commentator_id,
+                reply_id = reply_id,
             )
 
     if reply_id != None:
@@ -54,4 +56,24 @@ def get_comment():
         "comment_count": len(comments),
         }), 200
 
+
+
+@book.route("/comment/", methods=["DELETE"])
+@login_required
+def delete_comment():
+    comment_id = request.get_json().get("comment_id")
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if comment is None:
+        return jsonify({
+                "message": "comment does not exist",
+            }), 404
+    if comment.commentator_id != g.current_user.id:
+        return jsonify({
+                "message": "no permssion to delete"
+            }), 403
+    db.session.delete(comment)
+    db.session.commit()
+    return jsonify({
+            "message": "success",
+        }), 200
 
