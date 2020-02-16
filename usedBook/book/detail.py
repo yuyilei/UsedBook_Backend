@@ -14,7 +14,7 @@ from .. import db
 @login_required
 def detail():
     page = request.args.get("page", 1, type=int)
-    per_page = 5
+    per_page = 15
     book_id = request.args.get("book_id")
     book = Book.query.filter_by(id=book_id).first()
     comments = list(book.comments)
