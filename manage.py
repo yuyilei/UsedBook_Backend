@@ -4,7 +4,7 @@ from usedBook import db, app
 from usedBook.models import User, Book, Comment
 
 manager = Manager(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 
 def make_shell_context():
     """自动加载环境"""
