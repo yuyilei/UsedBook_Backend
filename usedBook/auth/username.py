@@ -13,8 +13,10 @@ from ..decorators import login_required
 @login_required
 def username():
     username = request.get_json().get("username")
+    avatar = request.get_json().get("avatar")
     user = g.current_user
     user.username = username
+    user.avatar = avatar
     db.session.add(user)
     db.session.commit()
     return jsonify({
