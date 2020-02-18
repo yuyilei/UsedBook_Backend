@@ -8,6 +8,7 @@ from . import book
 from ..models import Book
 from ..decorators import login_required
 from .. import db
+from ..coin_task import update_daily_task
 
 
 @book.route('/collect/', methods=['PUT'])
@@ -30,8 +31,10 @@ def collect():
     user.collections.append(book)
     db.session.add(user)
     db.session.commit()
+    coin_task_success = update_daily_task(g.current_user, "collect")
     return jsonify({
             "message" : "collect the book successfully",
+            "coin_task_success": coin_task_success,
         }), 200
 
 
