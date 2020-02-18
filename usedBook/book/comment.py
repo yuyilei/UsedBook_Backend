@@ -9,6 +9,7 @@ from . import book
 from ..models import Book, Comment
 from ..decorators import login_required
 from .. import db
+from ..coin_task import update_daily_task
 
 
 @book.route("/comment/", methods=["POST"])
@@ -29,8 +30,10 @@ def post_comment():
         comment.reply_id = reply_id
     db.session.add(comment)
     db.session.commit()
+    coin_task_success = update_daily_task(g.current_user, "comment")
     return jsonify({
             "message": "success",
+            "coin_task_success": coin_task_success,
         }), 200
 
 
