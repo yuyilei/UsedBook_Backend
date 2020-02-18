@@ -29,6 +29,13 @@ def purchase():
             }), 403
     # try to get lock
     # then...
+    user = g.current_user
+    # 用户的书币不够购买此书
+    if user.coins < book.price:
+        return jsonify({
+                "message": "书币不足！"
+            }), 403
+
     if acquire_lock(book_id) is True:
         try:
             record = Record(
@@ -37,8 +44,10 @@ def purchase():
                     )
             book.is_selt = True
             book.on_sell = False
+            user.coins -= book.price
             db.session.add(book)
             db.session.add(record)
+            db.session.add(user)
             db.session.commit()
             # 操作成功，释放锁
             release_lock(book_id)
