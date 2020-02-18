@@ -36,6 +36,7 @@ def purchase():
                         book_id = book_id,
                     )
             book.is_selt = True
+            book.on_sell = False
             db.session.add(book)
             db.session.add(record)
             db.session.commit()
