@@ -7,6 +7,7 @@ from . import auth
 from flask import request, jsonify
 from ..models import User
 from .. import db, app
+from ..coin_task import update_daily_task
 
 wx_appid = app.config['WX_APPID']
 wx_appsecret = app.config['WX_APPSECRET']
@@ -49,12 +50,12 @@ def login():
             user_id = None
             # check in User
             openid = rj['openid']
-            u = User.query.filter_by(open_id=openid).first()
+            user = User.query.filter_by(open_id=openid).first()
             token = ""
             message = ""
-            if u is not  None:
-                token = u.generate_auth_token()
-                user_id = u.id
+            if user is not  None:
+                token = user.generate_auth_token()
+                user_id = user.id
                 message = "not first login"
             else:
                 # generate that user
@@ -68,10 +69,13 @@ def login():
                     message = "failed in generating the user, ex= %s" % e.message
                 else:
                     message = "first login, and generate that user"
+
+            coin_task_success = update_daily_task(user, "login")
             return jsonify({
                 'success': True,
                 'token': token,
                 'message': message,
+                'coin_task_success': coin_task_success,
                 'id': user_id,
                 }), 200
         else:
