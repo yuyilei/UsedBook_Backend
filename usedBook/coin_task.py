@@ -3,20 +3,44 @@ import time
 import datetime
 import uuid
 
-from . import app
+from . import app, db
+from .models import User
 
 rds = redis.Redis(host=app.config['REDIS_HOSTNAME'], port=app.config['REDIS_PORT'])
 
 task_limit_times = {"login":1, "collect": 5, "publish": 5, "comment":5}
 inital_task = {"login":0, "collect":0, "publish": 0, "comment": 0}
+task_coin = {"login": 5, "collect": 2, "publish": 2, "comment": 2}
 
 def tomorrow():
     return int(time.mktime(datetime.date.today().timetuple())) + 86400
 
-def update_daily_task(user_id, task):
+def update_daily_task(user, task):
+    """
+    先更新task次数
+    再更新user的coin
+    """
+    if update_daily_task_count(user.id, task):
+        update_user_coin(user, task)
+        return True
+    return False
+
+def update_user_coin(user, task):
+    """
+    更新coin个数
+    """
+    coin = task_coin.get(task)
+    if coin is None:
+        return False
+    user.coins += coin
+    db.session.add(user)
+    db.session.commit()
+
+def update_daily_task_count(user_id, task):
     """
     跟新用户每日任务的执行次数
     """
+
     hashname = "userid-%s" % user_id
     expire_time = tomorrow()
     # 当天还没开始执行任何任务
