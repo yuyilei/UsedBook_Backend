@@ -5,4 +5,4 @@ user = Blueprint(
     __name__,
 )
 
-from . import publish, collection, bought
+from . import publish, collection, bought, mycoin
