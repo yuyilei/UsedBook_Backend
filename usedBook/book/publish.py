@@ -8,6 +8,7 @@ from . import book
 from ..models import Book, Tag
 from ..decorators import login_required
 from .. import db
+from ..coin_task import update_daily_task
 
 
 @book.route('/publish/', methods=['POST'])
@@ -27,6 +28,7 @@ def publish():
     tags = request.get_json().get('tags')
 
     try:
+        coin_task_success = False
         book = Book(
             price = int(price),
             name = name,
@@ -38,6 +40,7 @@ def publish():
         )
         db.session.add(book)
         db.session.commit()
+        coin_task_success = update_daily_task(g.current_user, "publish")
     except Exception as e:
         return jsonify({'message': 'add book to database failed, ex= %s' % repr(e)}), 500
 
@@ -61,4 +64,5 @@ def publish():
             return jsonify({
                     "message" : message,
                     "book_id" : book.id,
+                    "coin_task_success": coin_task_success,
                 }), 200
