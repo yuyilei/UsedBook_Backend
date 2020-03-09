@@ -70,6 +70,7 @@ def delete_purchase():
     删除购买记录
     分布式锁redis
     """
+
     book_id = request.get_json().get("book_id")
     book = Book.query.filter_by(id=book_id).first()
     if book is None:
@@ -88,11 +89,12 @@ def delete_purchase():
     # try to get lock
     # then...
     book.is_selt = False
+    book.on_sell = True
     db.session.add(book)
     db.session.delete(record)
     db.session.commit()
     return jsonify({
-            "message" : "delete successfully!"
+            "message" : "delete successfully!",
         }), 200
 
 
